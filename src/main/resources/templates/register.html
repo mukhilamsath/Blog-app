@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<style>
+body {
+     font-family: Arial, sans-serif;
+     background: #f4f4f4;
+     margin: 0;
+     padding: 0;
+   }
+   header {
+     background: #333;
+     color: #fff;
+     padding: 1rem 2rem;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+   }
+   nav a {
+     color: #fff;
+     text-decoration: none;
+     margin-left: 1rem;
+   }
+   .container {
+     max-width: 1100px;
+     margin: auto;
+     padding: 2rem;
+   }
+   .post {
+     background: #fff;
+     margin-bottom: 1rem;
+     padding: 1.5rem;
+     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+   }
+   .post h2 {
+     margin: 0 0 0.5rem 0;
+   }
+   .post p {
+     color: #555;
+   }
+   .comment-box {
+     background: #eee;
+     padding: 1rem;
+     margin-top: 1rem;
+   }
+   footer {
+     text-align: center;
+     padding: 1rem;
+     background: #333;
+     color: #fff;
+     margin-top: 2rem;
+   }
+  </style>
+<body>
+    <div class="container">
+        <h2 class="mb-4">User Registration</h2>
+		<form th:action="@{/users/userentity/user/add}" method="post" th:object="${registerForm}" enctype="application/json">
+
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" th:field="*{username}" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" th:field="*{password}" required>
+            </div>
+            <div class="mb-3">
+                <label for="bio" class="form-label">Bio</label>
+                <textarea class="form-control" id="bio" rows="3" th:field="*{bio}"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Image URL</label>
+                <input type="text" class="form-control" id="image" th:field="*{image}">
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+
+        <hr class="my-5">
+       
+       <!-- <h2 class="mb-4">User Login</h2>
+        <form th:action="@{/userentity/user/login}" method="get">
+            <div class="mb-3">
+                <label for="loginEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="loginEmail" name="mail" required>
+            </div>
+            <button type="submit" class="btn btn-success">Login</button>
+        </form>
+
+        <hr class="my-5">
+
+        <h2 class="mb-4">All Users</h2>
+        <a class="btn btn-info" href="/userentity/user/all">View All Users</a>-->
+    </div>
+</body>
+</html>
