@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Comment.CommentEntity;
 import com.example.demo.Comment.CommentPojo;
@@ -41,9 +42,11 @@ public class ArticleController {
     }
 
     @PostMapping("/save")
-    public String createArticle(@ModelAttribute ArticleEntity article, @RequestParam int authorId) {
-        articleService.saveArticle(article, authorId);
-        return "redirect:/add-article" ;
+    public String createArticle(@ModelAttribute ArticleEntity article, 
+                                @RequestParam int authorId,
+                                @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+        articleService.saveArticleWithImage(article, authorId, imageFile);
+        return "redirect:/feed";
     }
 
     // API methods below (if needed)

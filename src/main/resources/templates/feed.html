@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Feed | BloggApp</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .feed-container {
+            width: 100%;
+            max-width: 470px; /* Instagram feed width */
+            margin-top: 30px;
+        }
+        .post-card {
+            background-color: #fff;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+        }
+        .post-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #efefef;
+            margin-right: 12px;
+            object-fit: cover;
+        }
+        .post-username {
+            font-weight: 600;
+            font-size: 14px;
+            color: #262626;
+            text-decoration: none;
+        }
+        .post-image {
+            width: 100%;
+            max-height: 587px;
+            object-fit: cover;
+        }
+        .post-actions {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+        }
+        .action-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            margin-right: 8px;
+        }
+        .action-button svg {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.1s ease-in-out;
+        }
+        .action-button:active svg {
+            transform: scale(1.1);
+        }
+        .like-btn.liked svg {
+            fill: #ed4956;
+            color: #ed4956;
+            stroke: #ed4956;
+        }
+        .like-btn svg {
+            fill: transparent;
+            color: #262626;
+            stroke: currentColor;
+            stroke-width: 2;
+        }
+        .post-likes {
+            font-weight: 600;
+            font-size: 14px;
+            color: #262626;
+            margin-bottom: 8px;
+            padding: 0 16px;
+        }
+        .post-caption {
+            font-size: 14px;
+            color: #262626;
+            padding: 0 16px;
+            margin-bottom: 8px;
+        }
+        .post-time {
+            font-size: 10px;
+            color: #8e8e8e;
+            text-transform: uppercase;
+            padding: 0 16px;
+            margin-bottom: 16px;
+        }
+        .navbar {
+            background-color: white;
+            border-bottom: 1px solid #dbdbdb;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 60px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+        }
+        .nav-content {
+            width: 100%;
+            max-width: 470px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .nav-logo {
+            font-family: 'Instagram Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            color: black;
+        }
+        .spacer {
+            height: 80px;
+        }
+        .create-button {
+            text-decoration: none;
+            color: black;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/global-feed" class="nav-logo">SocialBlog</a>
+            <a href="/articles/form" class="create-button">➕ Create Post</a>
+        </div>
+    </nav>
+    <div class="spacer"></div>
+    <div class="feed-container">
+        
+        <div th:if="${#lists.isEmpty(articles)}" style="text-align: center; margin-top: 50px; color: #8e8e8e;">
+            <p>No posts yet! Be the first to share something.</p>
+        </div>
+
+        <div th:each="article : ${articles}" class="post-card">
+            <!-- Header -->
+            <div class="post-header">
+                <img th:if="${article.author.image != null}" th:src="${article.author.image}" class="post-avatar" />
+                <img th:unless="${article.author.image != null}" src="https://ui-avatars.com/api/?name=User&background=random" class="post-avatar" />
+                <a href="#" class="post-username" th:text="${article.author.username() != null ? article.author.username() : 'Anonymous'}">Username</a>
+            </div>
+            
+            <!-- Image -->
+            <img th:if="${article.imageUrl != null}" th:src="${article.imageUrl}" class="post-image" />
+            
+            <!-- Actions -->
+            <div class="post-actions">
+                <button class="action-button like-btn" th:classappend="${article.likedByCurrentUser ? 'liked' : ''}" th:onclick="'toggleLike(' + ${article.id} + ', this)'">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Likes -->
+            <div class="post-likes">
+                <span th:id="'likes-count-' + ${article.id}" th:text="${article.likesCount}">0</span> likes
+            </div>
+            
+            <!-- Caption -->
+            <div class="post-caption">
+                <span class="post-username" th:text="${article.author.username() != null ? article.author.username() : 'Anonymous'}">Username</span>
+                <span th:text="${article.title}">Caption goes here</span>
+                <p style="margin: 4px 0 0 0; color: #555; font-size: 13px;" th:text="${article.body}"></p>
+            </div>
+            
+            <!-- Time -->
+            <div class="post-time" th:if="${article.createdAt != null}" th:text="${#temporals.format(article.createdAt, 'dd MMM yyyy')}">2 HOURS AGO</div>
+            <div class="post-time" th:unless="${article.createdAt != null}">JUST NOW</div>
+        </div>
+    </div>
+    
+    <script th:inline="javascript">
+        const currentUserId = /*[[${currentUserId}]]*/ 1;
+
+        async function toggleLike(articleId, btnElement) {
+            try {
+                // Determine user origin ID safely
+                const userIdToUse = typeof currentUserId === 'number' ? currentUserId : 1; 
+                
+                const response = await fetch(`/api/articles/${articleId}/like?userId=${userIdToUse}`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const likesSpan = document.getElementById('likes-count-' + articleId);
+                    likesSpan.textContent = data.count;
+                    
+                    if (data.liked) {
+                        btnElement.classList.add('liked');
+                    } else {
+                        btnElement.classList.remove('liked');
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling like:', error);
+            }
+        }
+    </script>
+</body>
+</html>

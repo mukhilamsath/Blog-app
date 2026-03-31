@@ -1,5 +1,7 @@
 package com.example.demo.user;
 
+import java.util.HashSet;
+import java.util.Set;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +17,17 @@ public class UserEntity {
     private String username;
     private String bio;
     private String image;
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_followers",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
+    private Set<UserEntity> followers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "followers")
+    private Set<UserEntity> following = new HashSet<>();
 
     // Getters and setters
     public int getUserId() { return userId; }
@@ -34,4 +47,10 @@ public class UserEntity {
 
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image; }
+
+    public Set<UserEntity> getFollowers() { return followers; }
+    public void setFollowers(Set<UserEntity> followers) { this.followers = followers; }
+
+    public Set<UserEntity> getFollowing() { return following; }
+    public void setFollowing(Set<UserEntity> following) { this.following = following; }
 }
