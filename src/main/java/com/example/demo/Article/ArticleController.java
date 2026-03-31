@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Comment.CommentEntity;
-import com.example.demo.Comment.CommentPojo;
 import com.example.demo.Comment.CommentRepository;
 import com.example.demo.Comment.CommentService;
 import com.example.demo.user.UserEntity;
@@ -16,7 +15,6 @@ import com.example.demo.user.UserRepository;
 import java.util.List;
 
 @Controller
-@RequestMapping("/articles")
 public class ArticleController {
 
     @Autowired
@@ -24,7 +22,6 @@ public class ArticleController {
     
     @Autowired
     private CommentService commentService;
-
 
     @Autowired
     private CommentRepository commentRepository;
@@ -35,13 +32,15 @@ public class ArticleController {
     @Autowired
     private ArticleRepository articleRepository;
 
-    @GetMapping("/form")
+    // View Mapping
+    @GetMapping("/post/create")
     public String showArticleForm(Model model) {
         model.addAttribute("article", new ArticleEntity());
         return "createarticle"; 
     }
 
-    @PostMapping("/save")
+    // Action Form Mapping
+    @PostMapping("/post/save")
     public String createArticle(@ModelAttribute ArticleEntity article, 
                                 @RequestParam int authorId,
                                 @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
@@ -49,34 +48,19 @@ public class ArticleController {
         return "redirect:/feed";
     }
 
-    // API methods below (if needed)
-   
-
-
-    @ResponseBody
-    @PutMapping("/update/{id}")
-    public ArticleEntity updateArticle(@PathVariable int id, @RequestBody ArticleEntity article) {
-        return articleService.updateArticle(id, article);
-    }
-
-    @ResponseBody
-    @DeleteMapping("/udelete/{id}")
-    public void deleteArticle(@PathVariable int id) {
-        articleService.deleteArticle(id);
-    }
-    @GetMapping("/view/{id}")
+    // View mapping for individual post
+    @GetMapping("/post/{id}")
     public String viewArticle(@PathVariable int id, Model model) {
         ArticleEntity article = articleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Article not found"));
 
         List<CommentEntity> comments = commentRepository.findByArticle(article);
 
-        // Prepare an empty comment with associations set
         CommentEntity newComment = new CommentEntity();
         newComment.setArticle(article);
 
         // Simulate logged-in user
-        UserEntity user = userRepository.findById(1).orElseThrow(); // Replace with session logic
+        UserEntity user = userRepository.findById(1).orElseThrow(); 
         newComment.setUser(user);
 
         model.addAttribute("article", article);
@@ -84,5 +68,18 @@ public class ArticleController {
         model.addAttribute("newComment", newComment);
 
         return "viewarticle";
+    }
+
+    // JSON API standard routes
+    @ResponseBody
+    @PutMapping("/api/v1/posts/{id}")
+    public ArticleEntity updateArticle(@PathVariable int id, @RequestBody ArticleEntity article) {
+        return articleService.updateArticle(id, article);
+    }
+
+    @ResponseBody
+    @DeleteMapping("/api/v1/posts/{id}")
+    public void deleteArticle(@PathVariable int id) {
+        articleService.deleteArticle(id);
     }
 }

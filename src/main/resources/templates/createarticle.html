@@ -107,7 +107,7 @@
 <div class="container">
     <h2>Create new post</h2>
 
-    <form th:action="@{/articles/save}" th:object="${article}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/post/save}" th:object="${article}" method="post" enctype="multipart/form-data">
         
         <div class="file-upload-wrapper" id="drop-area">
             <div class="upload-icon">📸</div>

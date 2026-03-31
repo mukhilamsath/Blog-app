@@ -1,36 +1,33 @@
 package com.example.demo.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
-@Controller
-@RequestMapping("/users")
+@RestController
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     @Autowired
-    private LoginService userService;
+    private LoginService loginService;
 
-    @GetMapping("/userentity/user/all")
-    public List<UserEntity> getAllUsers() {
-        return userService.getAllUsers();
-    }
-   
-       
-  
-    @PostMapping("/userentity/user/add")
-    public String addUser(@ModelAttribute UserEntity registerForm) {
-        userService.saveUser(registerForm);
-       // Or redirect to a success page
-       return "landing";
+    @GetMapping("/all")
+    public ResponseEntity<List<UserEntity>> getAllUsers() {
+        return ResponseEntity.ok(loginService.getAllUsers());
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody UserEntity registerForm) {
+        UserEntity savedUser = loginService.saveUser(registerForm);
+        return ResponseEntity.ok(Map.of("message", "Registration successful", "userId", savedUser.getUserId()));
+    }
 
     @GetMapping("/{id}")
-    public UserEntity getUser(@PathVariable int id) {
-        return userService.getUserById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    public ResponseEntity<UserEntity> getUser(@PathVariable int id) {
+        return ResponseEntity.ok(loginService.getUserById(id)
+                .orElseThrow(() -> new RuntimeException("User not found")));
     }
 }

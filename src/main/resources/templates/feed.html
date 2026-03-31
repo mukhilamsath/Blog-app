@@ -138,8 +138,8 @@
 <body>
     <nav class="navbar">
         <div class="nav-content">
-            <a href="/global-feed" class="nav-logo">SocialBlog</a>
-            <a href="/articles/form" class="create-button">➕ Create Post</a>
+            <a href="/explore" class="nav-logo">SocialBlog</a>
+            <a href="/post/create" class="create-button">➕ Create Post</a>
         </div>
     </nav>
     <div class="spacer"></div>
@@ -195,7 +195,7 @@
                 // Determine user origin ID safely
                 const userIdToUse = typeof currentUserId === 'number' ? currentUserId : 1; 
                 
-                const response = await fetch(`/api/articles/${articleId}/like?userId=${userIdToUse}`, {
+                const response = await fetch(`/api/v1/posts/${articleId}/like?userId=${userIdToUse}`, {
                     method: 'POST'
                 });
                 

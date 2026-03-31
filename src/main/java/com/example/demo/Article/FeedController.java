@@ -19,7 +19,7 @@ public class FeedController {
         return "feed";
     }
 
-    @GetMapping("/global-feed")
+    @GetMapping("/explore")
     public String showGlobalFeed(Model model) {
         int currentUserId = 1; // Mocking logged-in user
         model.addAttribute("articles", feedService.getGlobalFeed(currentUserId));
